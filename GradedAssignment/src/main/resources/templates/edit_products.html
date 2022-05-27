@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Edit Sport Shoes Products</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+<link href="/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/brands.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/solid.min.css" rel="stylesheet" />
+<script src="/bootstrap/css/bootstrap.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/jquery/jquery.min.js"></script>
+<style th:replace="fragments/Merchant_style"></style>
+</head>
+<body>
+	<div th:replace="fragments/Merchant_header"></div>
+	<div class="container">
+		<form class="needs-validation"
+			th:action="@{/products/edit/{id}(id=${products.id})}" method="post"
+			th:object="${products}" enctype="multipart/form-data" novalidate>
+			<div class="mb-3 form-group row justify-content-center">
+				<div class="mt-2 text-center">
+					<h2>Update Sport Shoes Products</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="mb-3 form-group row justify-content-center">
+
+						<img
+							th:src="@{/uploads/products/{id}/{imageName}(id=${products.id}, imageName=${products.image})}"
+							width=100%, height=300>
+
+					</div>
+
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_image" class="form-label col-md-2 fw-bold">Image:</label>
+						<div class="col-md">
+							<input type="file" class="form-control" id="itemImage"
+								name="itemImage" accept="image/png, image/jpeg"
+								oninput="checkImage(this);" /> <input type="hidden"
+								name="originalImage" th:field="*{image}"
+								th:value="${products.image}">
+							<div class="invalid-feedback">Please enter a valid Image</div>
+							<div class="invalid-feedback" id="checkImage"></div>
+							<p class="text-danger" th:if="${#fields.hasErrors('image')}"
+								th:errors="*{image}"></p>
+							<p class="text-danger" th:if="${file}" th:text="${file}">
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_gender" class="form-label col-md-2 fw-bold">Gender:</label>
+						<div class="col-md">
+							<div class="form-check form-check-inline">
+								<input type="radio" class="form-check-input"
+									id="products_gender" value="Men" name="products_gender"
+									th:field="*{gender}" required /> <label
+									class="form-check-label" for="male">Men</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input type="radio" class="form-check-input"
+									id="products_gender" value="Women" name="products_gender"
+									th:field="*{gender}" required /> <label
+									class="form-check-label">Women</label>
+							</div>
+							<!-- Make the input type="radio" hidden so that error message can appear below the gender radio button -->
+							<input type="radio" name="gender" style="display: none;" required>
+							<div class="invalid-feedback">Please enter a valid Gender</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('gender')}"
+								th:errors="*{gender}"></p>
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_qty" class="form-label col-md-2 fw-bold">Quantity:</label>
+						<div class="col-md">
+							<input id="products_qty" type="number" class="form-control"
+								th:field="*{quantity}" required min=1 />
+							<div class="invalid-feedback">Please enter a valid Quantity</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('quantity')}"
+								th:errors="*{quantity}"></p>
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_price" class="form-label col-md-2 fw-bold">Price:</label>
+						<div class="col-md">
+							<input id="products_price" type="number" class="form-control"
+								th:field="*{price}" required min=50 step=0.1/>
+							<div class="invalid-feedback">Please enter a valid Price</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('price')}"
+								th:errors="*{price}"></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_name" class="form-label col-md-2 fw-bold">Name:</label>
+						<div class="col-md">
+							<input id="products_name" type="text" class="form-control"
+								th:field="*{name}" required minlength=5 maxlength=50 />
+							<div class="invalid-feedback">Please enter a valid Name</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('name')}"
+								th:errors="*{name}"></p>
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_brand" class="form-label col-md-2 fw-bold">Brand:</label>
+						<div class="col-md">
+							<select class="form-control" th:field="*{brand}" required
+								minlength=3 maxlength=30>
+								<option value="">Choose One</option>
+								<option th:each="brand : ${brandList}" th:value="${brand.id}"
+									th:text="${brand.name}"></option>
+							</select>
+							<div class="invalid-feedback">Please enter a valid Shoes
+								Brand</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('brand')}"
+								th:errors="*{brand}"></p>
+						</div>
+					</div>
+
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_colour" class="form-label col-md-2 fw-bold">Colour:</label>
+						<div class="col-md">
+							<input id="products_colour" type="text" class="form-control"
+								th:field="*{colour}" required minlength=3 maxlength=50 />
+							<div class="invalid-feedback">Please enter a valid Color</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('colour')}"
+								th:errors="*{colour}"></p>
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_size" class="form-label col-md-2 fw-bold">Size:</label>
+						<div class="col-md">
+							<fieldset>
+								<div class="form-check-inline" th:each="size : ${sizeList}">
+									<input class="form-check-input" type="checkbox"
+										th:value="${size.name}" th:name="${size.name}"
+										th:id="${size.id}" th:field="*{size}"
+										oninput="checkSize(this);" required /> <label
+										class="form-check-label" th:text="${size.name}"
+										th:for="${size.id}"></label>
+								</div>
+							</fieldset>
+							<div class="invalid-feedback">Please enter at least one
+								Size</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('size')}"
+								th:errors="*{size}"></p>
+						</div>
+					</div>
+
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_type" class="form-label col-md-2 fw-bold">Type:</label>
+						<div class="col-md">
+							<select class="form-control" th:field="*{type}" required>
+								<option value="">Choose One</option>
+								<option th:each="type : ${typeList}" th:value="${type.id}"
+									th:text="${type.name}"></option>
+							</select>
+							<div class="invalid-feedback">Please enter a valid Type</div>
+							<p class="text-danger" th:if="${#fields.hasErrors('type')}"
+								th:errors="*{type}"></p>
+						</div>
+					</div>
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_productCode"
+							class="form-label col-md-2 fw-bold">Product Code:</label>
+						<div class="col-md">
+							<input id="products_productCode" type="text" class="form-control"
+								th:field="*{productCode}" required minlength=3 maxlength=50
+								pattern="[A-Z]{2}\d{4}(-\d{3})?" />
+							<div class="invalid-feedback">Please enter a valid Product
+								Code</div>
+							<p class="text-danger"
+								th:if="${#fields.hasErrors('productCode')}"
+								th:errors="*{productCode}"></p>
+						</div>
+					</div>
+
+					<div class="mb-3 form-group row justify-content-center">
+						<label for="products_description"
+							class="form-label col-md-2 fw-bold">Description: </label>
+						<div class="col-md">
+							<textarea id="products_description" class="form-control"
+								th:field="*{description}" rows="5" required minlength=50
+								maxlength=250></textarea>
+							<div class="invalid-feedback">Please enter a valid
+								Description</div>
+							<p class="text-danger"
+								th:if="${#fields.hasErrors('description')}"
+								th:errors="*{description}"></p>
+						</div>
+					</div>
+					<div class="form-group row justify-content-center">
+						<div class="offset-md-2 col-md">
+							<button type="submit" class="btn btn-primary"
+								onclick="if (!confirm('Are you sure you want to Update?')) { return false }">Update Product</button>
+							<a type="button" class="btn btn-primary" th:href="@{/products}">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- Form Validation -->
+		<script type="text/javascript" th:inline="javascript">
+			function checkImage(fieldImage) {
+				var _validFileExtensions = [ ".jpeg", ".png" ];
+
+				if (fieldImage.type == "file") {
+					var sFileName = fieldImage.value;
+					if (sFileName.length > 0) {
+						var blnValid = false;
+						for (var j = 0; j < _validFileExtensions.length; j++) {
+							var sCurExtension = _validFileExtensions[j];
+							if (sFileName.substr(
+									sFileName.length - sCurExtension.length,
+									sCurExtension.length).toLowerCase() == sCurExtension
+									.toLowerCase()) {
+								blnValid = true;
+								break;
+							}
+						}
+
+						if (!blnValid) {
+							fieldImage.setCustomValidity("Wrong Format!");
+							document.getElementById("checkImage").innerHTML = "Wrong Format. Only images of type JPEG or PNG are supported. ";
+							return false;
+						} else {
+							fieldImage.setCustomValidity("");
+						}
+					}
+				}
+				return true;
+			}
+			function checkSize(fieldSize) {
+				if (fieldSize.value > 0) {
+					$("input[type=checkbox]").attr('required', false);
+					fieldSize.setCustomValidity("");
+				}
+			}
+			'use strict'
+			var form = document.querySelector('.needs-validation')
+
+			form.addEventListener('submit', function(event) {
+				if (!form.checkValidity()) {
+					event.preventDefault()
+					event.stopPropagation()
+
+				}
+				form.classList.add('was-validated')
+			})
+		</script>
+		<!-- End Form Validation -->
+	</div>
+	<br>
+	<div th:replace="fragments/footer"></div>
+</body>
+</html>

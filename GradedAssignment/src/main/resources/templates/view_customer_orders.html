@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>View Customer Orders</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/brands.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/solid.min.css" rel="stylesheet" />
+<script src="/bootstrap/css/bootstrap.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<style th:replace="fragments/Merchant_style"></style>
+</head>
+<body>
+	<div th:replace="fragments/Merchant_header"></div>
+	<div class="container">
+		<div class="h1">View Customer Orders</div>
+		<form th:action="@{/customerorders}">
+			<div class="mb-3 form-group row">
+				<label for="filter" class="form-label col-md-1 fw-bold">Filter:</label>
+				<div class="col-md-5">
+					<div class="input-group">
+						<input type="hidden" name="sortField" th:value="${sortField}" />
+						<input type="hidden" name="sortDir" th:value="${sortDir}">
+						<input type="text" class="form-control" name="keyword"
+							id="keyword" size="50" th:value="${keyword}" required /> &nbsp;
+						<div class="input-group-append">
+							<input type="submit" value="Search" class="btn btn-primary" />
+							&nbsp; <input type="button" value="Clear" id="btnClear"
+								onclick="clearSearch()" class="btn btn-primary" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<script type="text/javascript">
+			function clearSearch() {
+				window.location = "[[@{/customerorders}]]";
+			}
+		</script>
+
+		<table class="table bordered table-striped table-hover bg-white">
+			<thead class="table-info">
+				<tr>
+					<th>ID</th>
+					<th>Username</th>
+					<th>Address</th>
+					<th>Price</th>
+					<th>Product Code</th>
+					<th>Quantity</th>
+					<th>Size</th>
+					<th>OrderDate</th>
+					<th>Delivery Date</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<th:block th:each="customer : ${listCustomer}">
+					<tr>
+						<td><p th:text="'Order ID: ' + ${customer.orderId}"></p>
+							<p th:text="'Transaction ID: ' + ${customer.transactionId}"></p></td>
+						<td><a th:href="@{/member/{id}(id=${customer.member.id})}"
+							th:text="${customer.member.username}"></a></td>
+						<td th:text="${customer.address + ' S' + customer.postalCode}"></td>
+						<td th:text="${customer.total}"></td>
+						<td><a th:href="@{/pagetwo/{id}(id=${customer.product.id})}"
+							th:text="${customer.product.productCode}"></a></td>
+						<td th:text="${customer.quantity}"></td>
+						<td th:text="${customer.shoesize}"></td>
+						<td th:text="${customer.dateorder}"></td>
+						<td th:text="${customer.datedelivery}"></td>
+						<td th:text="${customer.status}"
+							th:style="${customer.status} eq'pending'? 'color:red;' : 'color:;'"></td>
+					</tr>
+			</tbody>
+
+		</table>
+		<div class="text-center mb-2" th:if="${totalItems == 0}">No
+			Record found</div>
+		<div class="text-center mb-2">
+			<!-- Display Total items and page number -->
+			<span
+				th:text="'Total Customers Orders: ' + ${totalItems} + ' - Page ' + ${currentPage} + ' of ' + ${totalPages}"></span><span>&nbsp;
+				- &nbsp;</span>
+			<!-- To display links that allow the users to navigate to a specific page, in the range from page 1 to total pages -->
+			<span th:each="i:${#numbers.sequence(1, totalPages)}"><a
+				th:if="${currentPage != i} "
+				th:href="@{'/customerorders/page/' + ${i}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}"
+				th:text="${i}"></a> <span th:unless="${currentPage != i}"
+				th:text="${i}"></span>&nbsp; &nbsp;</span>
+			<!-- Code to show the Next page hyperlink -->
+			<a th:if="${currentPage < totalPages}"
+				th:href="@{'/customerorders/page/' + ${currentPage + 1}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Next</a>
+			<span th:unless="${currentPage < totalPages}">Next</span>&nbsp;
+			<!-- code to display the Last page hyperlink -->
+			<a th:if="${currentPage< totalPages}"
+				th:href="@{'/customerorders/page/' +
+				${totalPages}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Last</a>
+			<span th:unless="${currentPage < totalPages}">Last</span>
+		</div>
+	</div>
+	<br>
+	<div th:replace="fragments/footer"></div>
+</body>
+</html>

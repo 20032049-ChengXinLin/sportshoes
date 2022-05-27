@@ -1,0 +1,95 @@
+
+<div class="row m-3 border-bottom fw-bold">
+	<div id="paypal-button-container" th:if="${(cartTotal)==0}"
+		th:class="${'btn disabled'}"></div>
+	<div id="paypal-button-container" th:if="${(cartTotal)!=0}"></div>
+	<form th:action="@{/shoppingcart/process_order}" method="post"
+		id="paypalForm">
+		<input type="hidden" name="cartTotal" id="formcartTotal"
+			th:value="${cartTotal}"> <input type="hidden" name="memberId"
+			id="memberId" th:value="${memberId}"> <input type="hidden"
+			name="orderId" id="orderId"> <input type="hidden"
+			name="transactionId" id="transactionId"> <input type="hidden"
+			name="address" id="address"> <input type="hidden"
+			name="country" id="country"> <input type="hidden"
+			name="postalCode" id="postalCode">
+	</form>
+
+	<script>
+		var cartTotal = document.getElementById("formcartTotal").value;
+		console.log("Cart Total: " + cartTotal);
+		paypal
+				.Buttons(
+						{
+							createOrder : function(data, actions) {
+								// This function sets up the details of the transaction, 
+								// including the amount and line item details.
+								return actions.order.create({
+									purchase_units : [ {
+										amount : {
+											value : cartTotal
+										}
+									} ]
+								});
+							},
+							onApprove : function(data, actions) {
+								// This function captures the funds from the transaction.
+								return actions.order
+										.capture()
+										.then(
+												function(details) {
+
+													//Extracting some information from details
+													var orderId = details.id;
+													var transactionId = details.purchase_units[0].payments.captures[0].id;
+													var completedBy = details.payer.name.given_name;
+													var address = details.purchase_units[0].shipping.address.address_line_1;
+													var country = details.purchase_units[0].shipping.address.country_code;
+													var postalCode = details.purchase_units[0].shipping.address.postal_code;
+													//Printing to the console some details
+													console
+															.log('Transaction completed by '
+																	+ completedBy);
+													console.log("Order ID: "
+															+ orderId);
+													console
+															.log("Transaction ID: "
+																	+ transactionId);
+													console.log("Address: "
+															+ address + ' '
+															+ country);
+													console.log("Postal Code: "
+															+ postalCode);
+													//Printing full details JSON
+													console
+															.log(JSON
+																	.stringify(details));
+
+													//Calling processOrder function
+													processOrder(orderId,
+															transactionId,
+															address, country,
+															postalCode);
+												});
+							}
+						}).render('#paypal-button-container');
+
+		function processOrder(orderId, transactionId, address, country,
+				postalCode) {
+
+			//Set orderId and transactionId into the hidden values in the paypalForm
+			document.getElementById("orderId").value = orderId;
+			document.getElementById("transactionId").value = transactionId;
+			document.getElementById("address").value = address;
+			document.getElementById("country").value = country;
+			document.getElementById("postalCode").value = postalCode;
+
+			//Submit the paypalForm to be processed at the backend
+			document.getElementById("paypalForm").submit();
+			console.log("Processing Order in backend: " + orderId);
+			console.log("Address: " + address + ' ' + country);
+			console.log("Postal Code: " + postalCode);
+
+		}
+	</script>
+</div>

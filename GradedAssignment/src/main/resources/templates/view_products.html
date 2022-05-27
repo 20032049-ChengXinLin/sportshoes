@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>View Sport Shoes Products</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+<link href="/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/brands.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/solid.min.css" rel="stylesheet" />
+<script src="/bootstrap/css/bootstrap.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<style th:replace="fragments/Merchant_style"></style>
+</head>
+<body>
+	<div th:replace="fragments/Merchant_header"></div>
+	<div class="container">
+		<div class="h1">View Sport Shoes Products</div>
+
+		<div th:if="${message}" th:text="${message}"
+			th:class="${'alert ' + alertClass}"></div>
+		<form th:action="@{/products}">
+			<div class="mb-3 form-group row">
+				<label for="filter" class="form-label col-md-1 fw-bold">Filter:</label>
+				<div class="col-md-5">
+					<div class="input-group">
+						<input type="hidden" name="sortField" th:value="${sortField}" />
+						<input type="hidden" name="sortDir" th:value="${sortDir}">
+						<input type="text" class="form-control" name="keyword"
+							id="keyword" size="50" th:value="${keyword}" required /> &nbsp;
+						<div class="input-group-append">
+							<input type="submit" value="Search" class="btn btn-primary" />
+							&nbsp; <input type="button" value="Clear" id="btnClear"
+								onclick="clearSearch()" class="btn btn-primary" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<script type="text/javascript">
+			function clearSearch() {
+				window.location = "[[@{/products}]]";
+			}
+		</script>
+		<div class="mt-3">
+			<a href="/products/add" class="btn btn-primary">Add Products</a>
+		</div>
+		<br>
+		<table class="table bordered table-striped table-hover bg-white">
+			<thead class="table-info">
+				<tr>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">ID</a></th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=brand&sortDir=' + ${reverseSortDir}}">Brand</a></th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir}}">Name</a></th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=gender&sortDir=' + ${reverseSortDir}}">Gender</a></th>
+					<th>Image</th>
+					<th>Size</th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=price&sortDir=' + ${reverseSortDir}}">Price</a></th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=quantity&sortDir=' + ${reverseSortDir}}">Qty</a></th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=type&sortDir=' + ${reverseSortDir}}">Type</a></th>
+					<th>Colour</th>
+					<th><a
+						th:href="@{'/products/page/' + ${currentPage} + '?sortField=productCode&sortDir=' + ${reverseSortDir}}">Product
+							Code</a></th>
+					<th>Description</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="products : ${listProducts}">
+					<tr>
+						<td th:text="${products.id}"></td>
+						<td th:text="${products.brand.name}"></td>
+						<td th:text="${products.name}"></td>
+						<td th:text="${products.gender}"></td>
+						<td><img
+							th:src="@{/uploads/products/{id}/{imageName}(id=${products.id}, imageName=${products.image})}"
+							width=100, height=100></td>
+						<td th:text="${products.size}"></td>
+						<td th:text="${#numbers.formatCurrency(products.price)}"></td>
+						<td th:text="${products.quantity}"></td>
+						<td th:text="${products.type.name}"></td>
+						<td th:text="${products.colour}"></td>
+						<td th:text="${products.productCode}"></td>
+						<td th:text="${products.description}"></td>
+						<td><a th:href="@{/products/edit/{id} (id=${products.id})}"><i
+								class="fas fa-pencil-alt"></i></a> | <a
+							th:href="@{/products/delete/{id} (id=${products.id})}"
+							onclick="if (!confirm('Are you sure you want to delete?')) { return false }"><i
+								class="fas fa-trash-alt"></i></a></td>
+					</tr>
+			</tbody>
+		</table>
+		<div class="text-center mb-2">
+			<!-- Display Total items and page number -->
+			<span
+				th:text="'Total Products: ' + ${totalItems} + ' - Page ' + ${currentPage} + ' of ' + ${totalPages}"></span><span>&nbsp;
+				- &nbsp;</span>
+			<!-- To display links that allow the users to navigate to a specific page, in the range from page 1 to total pages -->
+			<span th:each="i:${#numbers.sequence(1, totalPages)}"><a
+				th:if="${currentPage != i} "
+				th:href="@{'/products/page/' + ${i}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}"
+				th:text="${i}"></a> <span th:unless="${currentPage != i}"
+				th:text="${i}"></span>&nbsp; &nbsp;</span>
+			<!-- Code to show the Next page hyperlink -->
+			<a th:if="${currentPage < totalPages}"
+				th:href="@{'/products/page/' + ${currentPage + 1}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Next</a>
+			<span th:unless="${currentPage < totalPages}">Next</span>&nbsp;
+			<!-- code to display the Last page hyperlink -->
+			<a th:if="${currentPage< totalPages}"
+				th:href="@{'/products/page/' +
+				${totalPages}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Last</a>
+			<span th:unless="${currentPage < totalPages}">Last</span>
+		</div>
+	</div>
+	<div th:replace="fragments/footer"></div>
+</body>
+</html>

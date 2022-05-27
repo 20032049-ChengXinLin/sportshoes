@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Performance Reports</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+<link href="/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/brands.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/solid.min.css" rel="stylesheet" />
+<script src="/bootstrap/css/bootstrap.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<style th:replace="fragments/Merchant_style"></style>
+</head>
+<body>
+	<div th:replace="fragments/Merchant_header"></div>
+	<div class="container">
+		<div align="center">
+			<h2>View Performance Reports</h2>
+			<div id="chart_div" style="height: 500px;"></div>
+			<br>
+			<div id="piechart" style="height: 500px;"></div>
+			<br>
+		</div>
+		<script th:inline="javascript">
+			var real_data = /*[[${chartData}]]*/'noValue';
+			$(document).ready(function() {
+				google.charts.load('current', {
+					packages : [ 'corechart', 'bar' ]
+				});
+				google.charts.setOnLoadCallback(drawColumnChart);
+				google.charts.setOnLoadCallback(drawPieChart);
+			});
+			function drawColumnChart() {
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Name');
+				data.addColumn('number', 'Count');
+				Object.keys(real_data).forEach(function(key) {
+					data.addRow([ key, real_data[key] ]);
+				});
+				var options = {
+					title : 'Sport Shoes Products',
+					hAxis : {
+						title : 'Products name',
+					},
+					vAxis : {
+						title : 'View Count'
+					}
+				};
+				var chart = new google.visualization.ColumnChart(document
+						.getElementById('chart_div'));
+				chart.draw(data, options);
+			}
+			function drawPieChart() {
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Year');
+				data.addColumn('number', 'Views');
+				Object.keys(real_data).forEach(function(key) {
+					data.addRow([ key, real_data[key] ]);
+				});
+				var options = {
+					title : 'Sport Shoes Products'
+				};
+				var chart = new google.visualization.PieChart(document
+						.getElementById('piechart'));
+				chart.draw(data, options);
+			}
+		</script>
+	</div>
+	<div th:replace="fragments/footer"></div>
+</body>
+</html>

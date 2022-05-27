@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Sport Shoes - Purchase History</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+<link href="/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/brands.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/solid.min.css" rel="stylesheet" />
+<script src="/bootstrap/css/bootstrap.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<style th:replace="fragments/style"></style>
+<style>
+table, .bg-info {
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px
+		rgba(0, 0, 0, 0.23);
+}
+
+tbody p {
+	opacity: 0.7;
+}
+</style>
+</head>
+<body>
+	<div th:replace="fragments/header"></div>
+	<br>
+	<section>
+		<div class="container">
+			<h4>View Purchase History</h4>
+			<table class="table bordered table-striped table-hover bg-white">
+				<thead class="table-info">
+					<tr>
+						<th>Order Date</th>
+						<th>Product</th>
+						<th>Size</th>
+						<th>Price</th>
+						<th>Quantity</th>
+						<th>SubTotal</th>
+						<th>Delivery Date</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="orderList : ${orderList}"
+						th:id="${orderList.id}">
+						<tr>
+							<td th:text="${orderList.dateorder}"></td>
+							<td><img
+								th:src="@{/uploads/products/{id}/{imageName}(id=${orderList.product.id}, imageName=${orderList.product.image})}"
+								width=150, height=150>
+								<p th:text="${orderList.product.name}"></p>
+								<p th:text="'Order ID: ' + ${orderList.orderId}"></p>
+								<p th:text="'Transaction ID: ' + ${orderList.transactionId}"></p></td>
+							<td th:text="${orderList.shoesize}"></td>
+							<td th:text="${#numbers.formatCurrency(orderList.product.price)}"></td>
+							<td th:text="${orderList.quantity}"></td>
+							<td th:text="${#numbers.formatCurrency(orderList.total)}"></td>
+							<td th:text="${orderList.datedelivery}"></td>
+							<td th:text="${orderList.status}"
+								th:style="${orderList.status} eq'pending'? 'color:red;' : 'color:;'"></td>
+						</tr>
+				</tbody>
+			</table>
+			<div class="text-center mb-2" th:if="${totalItems == 0}">You have not purchase any products yet.</div>
+			<div class="text-center mb-2">
+				<!-- Display Total items and page number -->
+				<span th:text="'Total Purchase History: ' + ${totalItems} + ' - Page ' + ${currentPage} + ' of ' + ${totalPages}"></span><span>&nbsp; - &nbsp;</span>
+				<!-- To display links that allow the users to navigate to a specific page, in the range from page 1 to total pages -->
+				<span th:each="i:${#numbers.sequence(1, totalPages)}"><a
+					th:if="${currentPage != i} "
+					th:href="@{'/purchasehistory/page/' + ${i}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}" th:text="${i}"></a>
+					<span th:unless="${currentPage != i}" th:text="${i}"></span>&nbsp; &nbsp;</span>
+				<!-- Code to show the Next page hyperlink -->
+				<a th:if="${currentPage < totalPages}"
+					th:href="@{'/purchasehistory/page/' + ${currentPage + 1}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Next</a>
+				<span th:unless="${currentPage < totalPages}">Next</span>&nbsp;
+				<!-- code to display the Last page hyperlink -->
+				<a th:if="${currentPage< totalPages}"
+					th:href="@{'/purchasehistory/page/' +
+				${totalPages}} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null? '&keyword=' + keyword : ''}">Last</a>
+				<span th:unless="${currentPage < totalPages}">Last</span>
+			</div>
+			<br>
+		</div>
+	</section>
+	<br>
+	<div th:if="${totalItems == 0}" style="margin-top:70px;">
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+</html>

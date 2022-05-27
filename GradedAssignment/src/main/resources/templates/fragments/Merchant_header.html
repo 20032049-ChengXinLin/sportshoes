@@ -1,0 +1,102 @@
+<header>
+	<nav class="navbar fixed-top navbar-expand-lg navbar-light"
+		style="background-color: #e3f2fd;">
+		<div class="container-fluid">
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+				aria-controls="navbarTogglerDemo03" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="/"> <img src="/images/logo.png"
+				alt="Logo" width="50" height="35"> <i>Sports Shoes</i>
+			</a>
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+				<ul class="navbar-nav me-auto">
+					<li class="nav-item"><a class="nav-link active"
+						href="/merchant">Merchant Home</a></li>
+					<!--Drop Down Button Products -->
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Products </a>
+						<!-- Drop Down Link-->
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="/products">View
+									Products</a></li>
+							<li><a class="dropdown-item" href="/products/add">Add
+									Products</a></li>
+						</ul></li>
+						
+					<!--Drop Down Button Brand -->
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Shoes Brand</a>
+						<!-- Drop Down Link-->
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="/shoesbrand">View
+									Brand</a></li>
+							<li><a class="dropdown-item" href="/shoesbrand/add">Add
+									Brand</a></li>
+						</ul></li>
+						
+					<!--Drop Down Button Type -->
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Shoes Type</a>
+						<!-- Drop Down Link-->
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="/shoestype">View Type</a></li>
+							<li><a class="dropdown-item" href="/shoestype/add">Add
+									Type</a></li>
+						</ul></li>
+					
+					<!--Drop Down Button Size -->
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Size</a>
+						<!-- Drop Down Link-->
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="/availablesize">View
+									Size</a></li>
+							<li><a class="dropdown-item" href="/availablesize/add">Add
+									Size</a></li>
+						</ul></li>
+					<!-- Members -->
+					<li class="nav-item"><a class="nav-link" href="/member">Members</a></li>
+					<!-- Orders -->
+					<li class="nav-item"><a class="nav-link"
+						href="/customerorders">Orders</a></li>
+					<!-- Performance -->
+					<li class="nav-item"><a class="nav-link"
+						href="/performance">Performance</a></li>
+				</ul>
+			</div>
+			<div style="float: right">
+				<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+					<ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+						<!-- Sport Shoes -->
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="/">Sports Shoes</a></li>
+						<li class="nav-item"><a sec:authorize="!isAuthenticated()"
+							class="nav-link" href="/login">Login</a></li>
+						<li class="nav-item">
+							<form sec:authorize="isAuthenticated()" th:action="@{/logout}"
+								method="post" class="">
+								<button class="btn nav-link" type="submit">Logout</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+</header>
+<div sec:authorize="isAuthenticated()">
+	<h4 class="text-center">
+		Hello <span sec:authentication="principal.username"></span>!
+	</h4>
+</div>
